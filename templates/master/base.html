@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="pragma" content="no-cache" />
+  <meta http-equiv="cache-control" content="max-age=604800" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <title>{{ site_setting.site_title }}</title>
+  <meta name="description" content="{{ site_setting.meta_description }}">
+  <meta name="keywords" content="{{ site_setting.meta_keywords }}">
+
+  {% if site_setting.logo %}
+    <meta property="og:image" content="{{ site_setting.logo.url }}">
+  {% endif %}
+  <meta property="og:title" content="{{ site_setting.site_title }}">
+  <meta property="og:description" content="{{ site_setting.meta_description }}">
+
+  {% if site_setting.favicon %}
+    <link href="{{ site_setting.favicon.url }}" rel="shortcut icon" type="image/x-icon" />
+  {% endif %}
+
+  <!-- Bootstrap & dependencies -->
+  <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'fonts/fontawesome/css/all.min.css' %}" rel="stylesheet" type="text/css" />
+
+  <!-- Site CSS -->
+  <link href="{% static 'css/ui.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'css/custom.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'css/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
+  
+  <!-- Modern Design System CSS -->
+  <link href="{% static 'css/modern-design.css' %}" rel="stylesheet" type="text/css" />
+
+  {# Page-specific CSS/HEAD additions #}
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  {# ---------- Header (overridable) ---------- #}
+  {% block header %}
+    {% include 'includes/navbar.html' %}
+  {% endblock %}
+
+  {# Flash alerts #}
+  {% include 'includes/alerts.html' %}
+
+  {# ---------- Main Content ---------- #}
+  {% block content %}{% endblock %}
+
+  {# ---------- Footer (overridable) ---------- #}
+  {% block footer %}
+    {% include 'includes/footer.html' %}
+  {% endblock %}
+
+  <!-- JS (loaded at end for performance) -->
+  <script src="{% static 'js/jquery-2.0.0.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'js/script.js' %}"></script>
+  
+  <!-- Modern Design JavaScript -->
+  <script src="{% static 'js/modern-design.js' %}"></script>
+
+  <script>
+    // Page-safe jQuery ready
+    (function($){
+      $(function(){
+        // global ready hook
+      });
+    })(jQuery);
+  </script>
+
+  {# Page-specific scripts #}
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,152 @@
+{%extends 'master/base.html'%} {%load static%} {%block content%}
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+  <div class="container">
+    <div class="row">
+      <aside class="col-md-3">
+        {%include 'accounts/includes/sidebar.html'%}
+      </aside>
+
+      <main class="col-md-9">
+        <article class="card">
+          <header class="card-header">
+            <strong class="d-inline-block mr-3">Logged in as:</strong>
+            <span>{{request.user.first_name}} {{request.user.last_name}}</span>
+          </header>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card" style="text-align: center">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Products</h5>
+                    <h4>{{my_products_total|default:"0"}}</h4>
+                    <a href="{%url 'my_products'%}">View Products</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card" style="text-align: center">
+                  <div class="card-body">
+                    <h5 class="card-title">Received Orders</h5>
+                    <h4>{{ received_orders_total|default:"0" }}</h4>
+                    <a href="{%url 'my_orders'%}">View Orders</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- row.// -->
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="card" style="text-align: center">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Sales</h5>
+                    <h4>{{ total_sales|default:"0" }}</h4>
+                    <a href="{%url 'my_sales'%}">View Sales</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card" style="text-align: center">
+                  <div class="card-body">
+                    <h5 class="card-title">Sales Amount</h5>
+                    <h4>Rs. {{ total_sales_amount|default:"0"|floatformat:2 }}</h4>
+                    <a href="{%url 'my_sales'%}">View Sales</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- row.// -->
+            <div class="row mt-3">
+              <!-- My products summary -->
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title mb-3">My Products</h5>
+                    <div class="d-flex flex-wrap gap-3">
+                      <div class="mr-4 mb-2"><strong>Total:</strong> {{ my_products_total }}</div>
+                      <div class="mr-4 mb-2 text-success"><strong>Approved:</strong> {{ my_products_approved }}</div>
+                      <div class="mr-4 mb-2 text-warning"><strong>Pending:</strong> {{ my_products_pending }}</div>
+                      <div class="mr-4 mb-2 text-primary"><strong>Active:</strong> {{ my_products_active }}</div>
+                      <div class="mr-4 mb-2 text-secondary"><strong>Inactive:</strong> {{ my_products_inactive }}</div>
+                    </div>
+                    <a class="btn btn-sm btn-outline-primary mt-2" href="{% url 'my_products' %}">Manage Products</a>
+                    <a class="btn btn-sm btn-primary mt-2" href="{% url 'add_product' %}">Add Product</a>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Recent Orders Summary -->
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title mb-3">Recent Orders</h5>
+                    {% if recent_orders %}
+                      {% for order in recent_orders|slice:":3" %}
+                        <div class="border-bottom pb-2 mb-2">
+                          <div class="d-flex justify-content-between">
+                            <span class="text-muted">#{{ order.order_number }}</span>
+                            <small class="text-muted">{{ order.created_at|date:"M d" }}</small>
+                          </div>
+                          <div class="text-success">
+                            <strong>Rs. {{ order.order_total|floatformat:2 }}</strong>
+                          </div>
+                        </div>
+                      {% endfor %}
+                      <a class="btn btn-sm btn-outline-primary mt-2" href="{% url 'my_orders' %}">View All Orders</a>
+                    {% else %}
+                      <p class="text-muted">No orders yet</p>
+                      <a class="btn btn-sm btn-primary mt-2" href="{% url 'store' %}">Start Shopping</a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Recent Sales Summary -->
+            {% if recent_sales %}
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title mb-3">Recent Sales</h5>
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th>Product</th>
+                            <th>Buyer</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for sale in recent_sales|slice:":5" %}
+                          <tr>
+                            <td>{{ sale.product.product_name }}</td>
+                            <td>{{ sale.user.first_name }}</td>
+                            <td class="text-success">Rs. {{ sale.product_price|floatformat:2 }}</td>
+                            <td>{{ sale.created_at|date:"M d, Y" }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    <a class="btn btn-sm btn-outline-primary mt-2" href="{% url 'my_sales' %}">View All Sales</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          <!-- card-body .// -->
+        </article>
+        <!-- order-group.// -->
+      </main>
+    </div>
+    <!-- row.// -->
+  </div>
+</section>
+
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+{%endblock%}
