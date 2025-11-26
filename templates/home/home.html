@@ -31,10 +31,71 @@
   }
 
   /* Hero */
-  .main{max-width:1200px;margin:0 auto;padding:96px 24px 40px;text-align:center}
+  .main{max-width:1200px;margin:0 auto;padding:40px 24px 30px;text-align:center}
   .title{font-size:clamp(42px,7vw,80px);font-weight:800;letter-spacing:-.02em;line-height:1.08;margin:0 0 18px}
   .title .tone{opacity:.9}
   .sub{max-width:720px;margin:0 auto 24px;color:#4b5563;font-size:18px}
+
+  /* Hero slider */
+  .hero-slider{
+    width:100vw;
+    position:relative;
+    left:50%;
+    right:50%;
+    margin-left:-50vw;
+    margin-right:-50vw;
+    overflow:hidden;
+  }
+  .hero-slide-link{display:block}
+  .hero-slide-link:focus-visible{outline:3px solid #fff;outline-offset:-6px}
+  .hero-slide-image{
+    width:100%;
+    height:auto;
+    min-height:260px;
+    max-height:80vh;
+    object-fit:cover;
+    display:block;
+  }
+  .hero-slide-fallback{height:320px;display:grid;place-items:center;background:#f3f4f6;color:#6b7280;text-align:center}
+  .hero-slider--empty{margin-bottom:24px}
+  .carousel-control-prev,
+  .carousel-control-next{
+    filter:none;
+    text-shadow:none;
+    background:none;
+    background-image:none !important;
+    width:52px;
+    opacity:1;
+    border:0;
+    box-shadow:none;
+    outline:none;
+  }
+  .carousel-control-prev:focus,
+  .carousel-control-next:focus{
+    outline:none;
+    box-shadow:none;
+  }
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon{
+    background:none;
+    width:48px;
+    height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .carousel-control-prev-icon::after,
+  .carousel-control-next-icon::after{
+    font-size:32px;
+    color:#fff;
+    line-height:1;
+  }
+  .carousel-control-prev-icon::after{
+    content:'\2039';
+  }
+  .carousel-control-next-icon::after{
+    content:'\203A';
+  }
 
   /* Feature cards (hero row) */
   .stage{position:relative;margin:0 0 44px 0}
@@ -92,6 +153,25 @@
 
   /* Offer spotlight */
   .offer{margin:56px 0 16px}
+  .promo-banner{
+    margin:40px 0;
+    width:100vw;
+    position:relative;
+    left:50%;
+    right:50%;
+    margin-left:-50vw;
+    margin-right:-50vw;
+  }
+  .promo-banner--split .promo-banner__inner{
+    display:grid;
+    gap:16px;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  }
+  .promo-banner__item img{
+    width:100%;
+    display:block;
+    height:auto;
+  }
   .offer-inner{background:#fff;border-radius:24px;box-shadow:0 10px 24px rgba(0,0,0,.07);padding:20px;position:relative;overflow:hidden}
   .offer-tape{font-size:clamp(38px,6vw,72px);font-weight:900;letter-spacing:-.02em;color:#111827;opacity:.08;white-space:nowrap;overflow:hidden}
   .offer-grid{display:grid;grid-template-columns:360px 1fr 320px;gap:24px;align-items:center;margin-top:16px}
@@ -176,6 +256,48 @@
 {# ---------------- Main content ---------------- #}
 {% block content %}
 
+{% if banners %}
+<section class="hero-slider" aria-label="Featured marketplace banners">
+  <div id="heroBannerCarousel" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      {% for banner in banners %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+          {% if banner.banner_image %}
+            {% if banner.url %}
+              <a href="{{ banner.url }}" class="hero-slide-link" target="_blank" rel="noopener">
+                <img src="{{ banner.banner_image.url }}" alt="{{ banner.banner_title }}" class="hero-slide-image">
+              </a>
+            {% else %}
+              <img src="{{ banner.banner_image.url }}" alt="{{ banner.banner_title }}" class="hero-slide-image">
+            {% endif %}
+          {% else %}
+            <div class="hero-slide-fallback">
+              <p>No image uploaded for "{{ banner.banner_title }}"</p>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    {% if banners|length > 1 %}
+      <button class="carousel-control-prev" type="button" data-target="#heroBannerCarousel" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-target="#heroBannerCarousel" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </button>
+    {% endif %}
+  </div>
+</section>
+{% else %}
+<section class="hero-slider hero-slider--empty">
+  <div class="hero-slide-fallback">
+    <p>Add banners from the admin to populate the homepage slider.</p>
+  </div>
+</section>
+{% endif %}
+
 <main class="main">
   <h1 class="title">
     A place to discover<br><span class="tone">your marketplace.</span>
@@ -185,42 +307,6 @@
     second-hand textbooks, project services, snacks, and more.
   </p>
 </main>
-
-{# --- Hero carousel (Bootstrap) --- #}
-<section class="section-intro padding-y-sm">
-  <div class="container">
-    {% if banners %}
-      <div id="bannerCarousel" class="carousel slide" data-ride="carousel">
-        <div class="carousel-inner">
-          {% for banner in banners %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-              {% if banner.banner_image %}
-                <img
-                  src="{{ banner.banner_image.url }}"
-                  class="d-block w-100 img-fluid rounded"
-                  alt="{{ banner.banner_image.name|default:'Banner' }}"
-                />
-              {% else %}
-                <div class="banner-placeholder">
-                  <i class="fas fa-image"></i>
-                  <span>Banner Image</span>
-                </div>
-              {% endif %}
-            </div>
-          {% endfor %}
-        </div>
-        <a class="carousel-control-prev" href="#bannerCarousel" role="button" data-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#bannerCarousel" role="button" data-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a>
-      </div>
-    {% endif %}
-  </div>
-</section>
 
 {# --- Dynamic Hero category cards --- #}
 <section class="stage" id="browse">
@@ -359,6 +445,36 @@
 </section>
 
 {# --- Great Offer (uses offer_product from view) --- #}
+{% if promo_banner_left or promo_banner_right %}
+<section class="promo-banner promo-banner--split">
+  <div class="promo-banner__inner">
+    {% if promo_banner_left %}
+      <div class="promo-banner__item">
+        {% if promo_banner_left.url %}
+          <a href="{{ promo_banner_left.url }}" target="_blank" rel="noopener">
+            <img src="{{ promo_banner_left.image.url }}" alt="{{ promo_banner_left.title|default:'Promo banner' }}">
+          </a>
+        {% else %}
+          <img src="{{ promo_banner_left.image.url }}" alt="{{ promo_banner_left.title|default:'Promo banner' }}">
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if promo_banner_right %}
+      <div class="promo-banner__item">
+        {% if promo_banner_right.url %}
+          <a href="{{ promo_banner_right.url }}" target="_blank" rel="noopener">
+            <img src="{{ promo_banner_right.image.url }}" alt="{{ promo_banner_right.title|default:'Promo banner' }}">
+          </a>
+        {% else %}
+          <img src="{{ promo_banner_right.image.url }}" alt="{{ promo_banner_right.title|default:'Promo banner' }}">
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
 {% if offer_product %}
 <section class="offer" aria-label="Great offer">
   <div class="container">
@@ -449,7 +565,19 @@
 
 {# ---------- Page JS ---------- #}
 {% block extra_scripts %}
+{{ block.super }}
 <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var heroCarousel = $('#heroBannerCarousel');
+    if (heroCarousel.length) {
+      heroCarousel.carousel({
+        interval: 3000,
+        ride: 'carousel',
+        pause: false
+      });
+    }
+  });
+  
   (function(){
     const hdr = document.getElementById('hdr');
     const btn = document.getElementById('menuBtn');
@@ -463,3 +591,4 @@
   })();
 </script>
 {% endblock %}
+
