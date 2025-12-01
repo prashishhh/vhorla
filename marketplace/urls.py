@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', include('loginattempt.urls')),
     path('secret/', admin.site.urls),
     path('', views.home, name='home'),
+    path('contact/', views.contact, name='contact'),
     path('store/', include('store.urls')),
     path('accounts/', include('accounts.urls')),
     # path('messages/', include('message.urls')),

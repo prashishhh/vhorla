@@ -2,6 +2,7 @@ from django.shortcuts import render
 from store.models import Product
 from banner.models import Banner, PromoBanner
 from category.models import Category
+from sitesetting.models import SiteSetting, ContactSetting
 
 def home(request):
     # Show only the 4 newest approved products
@@ -25,10 +26,10 @@ def home(request):
         .filter(status=True, is_approved=True, is_featured=True)
         .order_by('-updated_date', '-created_date')
         .first()
-        or Product.objects.filter(status=True, is_approved=True)
-                          .order_by('-updated_date', '-created_date')
-                          .first()
     )
+
+    # Site Settings for Hero Section
+    site_setting = SiteSetting.objects.first()
 
     context = {
         'products': products,
@@ -37,6 +38,30 @@ def home(request):
         'offer_product': offer_product,
         'promo_banner_left': promo_banner_left,
         'promo_banner_right': promo_banner_right,
+        'site_setting': site_setting,
     }
 
     return render(request, 'home/home.html', context)
+
+def contact(request):
+    if request.method == 'POST':
+        # Handle form submission here (e.g., send email)
+        pass
+    
+    site_setting = SiteSetting.objects.first()
+    # Get or create ContactSetting to ensure it always exists
+    contact_setting, created = ContactSetting.objects.get_or_create(pk=1)
+    
+    # Debug output
+    print(f"DEBUG: contact_setting = {contact_setting}")
+    print(f"DEBUG: primary_email = {contact_setting.primary_email}")
+    print(f"DEBUG: primary_phone = {contact_setting.primary_phone}")
+    
+    context = {
+        'site_setting': site_setting,
+        'contact_setting': contact_setting,
+    }
+    return render(request, 'home/contactus.html', context)
+
+
+

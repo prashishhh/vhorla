@@ -1,0 +1,217 @@
+{% extends "master/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+    /* Custom styles for the clean, monochrome look and 'Inter' font */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+    :root {
+        --primary-text: #000000;
+        --secondary-text: #555555;
+        --background-white: #FFFFFF;
+    }
+
+    /* Scoped to the contact section to avoid breaking base styles */
+    .contact-section {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--background-white);
+        color: var(--primary-text);
+        min-height: 80vh;
+        /* Adjusted for integration */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 0;
+    }
+
+    /* Enforcing primary styles */
+    .text-primary {
+        color: var(--primary-text) !important;
+    }
+
+    .text-secondary {
+        color: var(--secondary-text);
+    }
+
+    .border-line {
+        border-color: #DDDDDD;
+    }
+
+    /* --- Social Media Styling --- */
+
+    /* General styling for the circular icons - Size adjusted for 3-column layout (80px) */
+    .social-icon-wrapper {
+        width: 5rem;
+        /* Size set to 80px */
+        height: 5rem;
+        /* Size set to 80px */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px;
+        /* fully circular */
+        box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.2), 0 5px 8px -2px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        margin: 0 auto;
+        /* Center the icon within its grid cell */
+    }
+
+    .social-icon-wrapper:hover {
+        transform: scale(1.1);
+        box-shadow: 0 20px 30px -3px rgba(0, 0, 0, 0.4), 0 8px 12px -4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Specific Brand Colors (Original Colors) */
+    .whatsapp {
+        background-color: #25D366;
+        color: white;
+    }
+
+    .instagram {
+        background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+        color: white;
+    }
+
+    .facebook {
+        background-color: #1877F2;
+        color: white;
+    }
+
+    .tiktok {
+        background-color: #000000;
+        color: #69C9D0;
+    }
+
+    .wechat {
+        background-color: #07BE37;
+        color: white;
+    }
+
+    .youtube {
+        background-color: #FF0000;
+        color: white;
+    }
+
+    /* Icon size adjusted */
+    .social-icon-wrapper i {
+        font-size: 2.25rem;
+        /* text-4xl */
+    }
+
+    /* To ensure the Instagram icon stands out on its gradient background */
+    .instagram i {
+        color: white !important;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-section">
+    <div class="w-full max-w-6xl bg-white p-12 md:p-20 lg:p-24 rounded-xl shadow-2xl">
+
+        <h1 class="text-6xl md:text-7xl font-extrabold text-primary mb-16 text-center">Get in touch</h1>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-12">
+
+            <div class="space-y-12">
+
+                <div class="space-y-8 text-secondary text-xl">
+                    <h2 class="text-3xl font-bold text-primary mb-6">Primary Office</h2>
+
+                    <div>
+                        <p class="text-base font-semibold uppercase tracking-wider text-secondary mb-1">Email:</p>
+                        <a href="mailto:{{ contact_setting.primary_email }}" class="font-medium text-primary text-2xl hover:text-secondary transition duration-150">{{ contact_setting.primary_email|default:"contact@monetatech.com" }}</a>
+                    </div>
+
+                    <div>
+                        <p class="text-base font-semibold uppercase tracking-wider text-secondary mb-1">Phone 1:</p>
+                        <a href="tel:{{ contact_setting.primary_phone }}"
+                            class="font-medium text-primary text-2xl hover:text-secondary transition duration-150">{{ contact_setting.primary_phone|default:"+1 (555) 123-4567" }}</a>
+                    </div>
+
+                    <div>
+                        <p class="text-base font-semibold uppercase tracking-wider text-secondary mb-1">Address 1:</p>
+                        <p class="font-medium text-primary text-2xl">{{ contact_setting.primary_address|default:"123 Innovation Avenue, Suite 456<br>San Francisco, CA 94107, USA"|linebreaksbr }}</p>
+                    </div>
+                </div>
+
+                <hr class="border-line">
+
+                <div class="space-y-8 text-secondary text-xl">
+                    <h2 class="text-3xl font-bold text-primary mb-6">Support & Inquiries</h2>
+
+                    <div>
+                        <p class="text-base font-semibold uppercase tracking-wider text-secondary mb-1">Phone 2:</p>
+                        <a href="tel:{{ contact_setting.support_phone }}"
+                            class="font-medium text-primary text-2xl hover:text-secondary transition duration-150">{{ contact_setting.support_phone|default:"+1 (555) 987-6543 (Support)" }}</a>
+                    </div>
+
+                    <div>
+                        <p class="text-base font-semibold uppercase tracking-wider text-secondary mb-1">Address 2:</p>
+                        <p class="font-medium text-primary text-2xl">{{ contact_setting.support_address|default:"789 Digital Plaza, Floor 10<br>New York, NY 10001, USA"|linebreaksbr }}</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="lg:pl-8 text-center flex flex-col justify-center">
+
+                <div class="space-y-12">
+                    <h2 class="text-3xl font-bold text-primary mb-6">Connect with us</h2>
+                    <p class="text-xl text-secondary mb-10">Follow us on all our social channels.</p>
+
+                    <div class="grid grid-cols-3 gap-6">
+
+                        <a href="{{ contact_setting.instagram_url|default:'https://www.instagram.com/companyname' }}"
+                            target="_blank" aria-label="Instagram">
+                            <div class="social-icon-wrapper instagram">
+                                <i class="fab fa-instagram"></i>
+                            </div>
+                        </a>
+
+                        <a href="{{ contact_setting.whatsapp_url|default:'https://wa.me/15551234567' }}" target="_blank"
+                            aria-label="WhatsApp">
+                            <div class="social-icon-wrapper whatsapp">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                        </a>
+
+                        <a href="{{ contact_setting.facebook_url|default:'https://www.facebook.com/companyname' }}"
+                            target="_blank" aria-label="Facebook">
+                            <div class="social-icon-wrapper facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                        </a>
+
+                        <a href="{{ contact_setting.tiktok_url|default:'https://www.tiktok.com/@companyname' }}"
+                            target="_blank" aria-label="TikTok">
+                            <div class="social-icon-wrapper tiktok">
+                                <i class="fab fa-tiktok"></i>
+                            </div>
+                        </a>
+
+                        <a href="{{ contact_setting.youtube_url|default:'https://www.youtube.com/@companyname' }}"
+                            target="_blank" aria-label="YouTube">
+                            <div class="social-icon-wrapper youtube">
+                                <i class="fab fa-youtube"></i>
+                            </div>
+                        </a>
+
+                        <a href="{{ contact_setting.wechat_url|default:'mailto:contact@monetatech.com' }}"
+                            target="_blank" aria-label="WeChat">
+                            <div class="social-icon-wrapper wechat">
+                                <i class="fab fa-weixin"></i>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

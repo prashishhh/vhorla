@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import SiteSetting
+from .models import SiteSetting, ContactSetting
 
 from django.utils.html import format_html
 
@@ -29,5 +29,21 @@ class SettingAdmin(admin.ModelAdmin):
     favicon_preview.short_description = 'Favicon'
     default_image_preview.short_description = 'Default Image'
     
+
+class ContactSettingAdmin(admin.ModelAdmin):
+    list_display = ('primary_email', 'primary_phone', 'support_phone')
+    fieldsets = (
+        ('Primary Office', {
+            'fields': ('primary_email', 'primary_phone', 'primary_address')
+        }),
+        ('Support & Inquiries', {
+            'fields': ('support_phone', 'support_address')
+        }),
+        ('Social Media', {
+            'fields': ('instagram_url', 'whatsapp_url', 'facebook_url', 'tiktok_url', 'youtube_url', 'wechat_url')
+        }),
+    )
     
+
 admin.site.register(SiteSetting, SettingAdmin)
+admin.site.register(ContactSetting, ContactSettingAdmin)
