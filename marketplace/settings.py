@@ -93,16 +93,20 @@ AUTH_USER_MODEL = 'accounts.Account'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import dj_database_url
+
+# Use DATABASE_URL if available (production), otherwise use local PostgreSQL
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "myproject_db",
-        "USER": "prashish",
-        "PASSWORD": "ilovepostgres@1",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
+    'default': dj_database_url.config(
+        default=config(
+            'DATABASE_URL',
+            default='postgresql://prashish:ilovepostgres@1@localhost:5432/myproject_db'
+        ),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
+
 
 
 
@@ -171,7 +175,9 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',  # maps "error" → Bootstrap red
 }
 CSRF_TRUSTED_ORIGINS = [
-    'https://summerclass-ghxx.onrender.com', 
+    'https://summerclass-ghxx.onrender.com',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
 ]
 
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
@@ -184,3 +190,32 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 ESEWA_PRODUCT_CODE = config('ESEWA_PRODUCT_CODE', default='EPAYTEST')
 ESEWA_SECRET_KEY = config('ESEWA_SECRET_KEY')
 ESEWA_FORM_URL = config('ESEWA_FORM_URL', default='https://rc-epay.esewa.com.np/api/epay/main/v2/form')
+
+# Security Settings for Production
+if not DEBUG:
+    # HTTPS/SSL Settings
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    
+    # HSTS Settings (HTTP Strict Transport Security)
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    
+    # Proxy Settings (for Render/Heroku/etc)
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+else:
+    # Development settings
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+
+# Session Settings (applies to both dev and prod)
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = False  # Must be False for AJAX to work
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
